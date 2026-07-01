@@ -1,0 +1,43 @@
+# Step 1: Self-signed issuer:
+#         Used only to generate the root CA certificate
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata: 
+  name: selfsigned-issuer
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  selfSigned: {}
+---
+# Step 2: Root CA certificate:
+#         Signed by the self-signed issuer
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: platform-ca
+  namespace: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  isCA: true
+  commonName: platform-ca
+  secretName: platform-ca-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Step 3: CA Issuer:
+#         Uses the root CA to sign all service certificates
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: platform-ca-issuer
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  ca:
+    secretName: platform-ca-secret 
