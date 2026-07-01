@@ -35,7 +35,7 @@ spec:
       protocol: HTTPS
       port: 443
       tls:
-        node: Terminate
+        mode: Terminate
         certificateRefs:
           - name: platform-gateway-tls
             namespace: envoy-gateway-system
