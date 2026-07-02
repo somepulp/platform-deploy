@@ -13,7 +13,7 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
   dnsNames:
-    - harbor.platform
+    - zot.platform
     - vault.plaform
     - ml-classifier.platform
 ---
